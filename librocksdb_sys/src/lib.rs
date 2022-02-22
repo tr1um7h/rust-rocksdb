@@ -910,6 +910,7 @@ extern "C" {
         target_size: *const u64,
         num_paths: c_int,
     );
+    pub fn crocksdb_options_get_cf_paths_num(options: *mut Options) -> usize;
     pub fn crocksdb_options_get_db_paths_num(options: *mut Options) -> usize;
     pub fn crocksdb_options_get_db_path(options: *mut Options, idx: size_t) -> *const c_char;
     pub fn crocksdb_options_get_path_target_size(options: *mut Options, idx: size_t) -> u64;

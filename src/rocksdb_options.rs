@@ -1238,6 +1238,10 @@ impl DBOptions {
         unsafe { crocksdb_ffi::crocksdb_options_get_db_paths_num(self.inner) }
     }
 
+    pub fn get_cf_paths_num(&self) -> usize {
+        unsafe { crocksdb_ffi::crocksdb_options_get_cf_paths_num(self.inner) }
+    }
+
     pub fn get_db_path(&self, idx: usize) -> Option<String> {
         unsafe {
             let ptr = crocksdb_ffi::crocksdb_options_get_db_path(self.inner, idx as size_t);

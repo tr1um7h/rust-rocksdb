@@ -26,6 +26,7 @@ pub fn test_column_family() {
     {
         let mut opts = DBOptions::new();
         opts.create_if_missing(true);
+        assert_eq!(opts.get_cf_paths_num(), 0);
         let mut cf_opts = ColumnFamilyOptions::new();
         cf_opts.add_merge_operator("test operator", test_provided_merge);
         let mut db = DB::open_cf(opts, path_str, vec![("default", cf_opts)]).unwrap();
