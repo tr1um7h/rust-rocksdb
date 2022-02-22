@@ -26,10 +26,14 @@ pub fn test_column_family() {
     {
         let mut opts = DBOptions::new();
         opts.create_if_missing(true);
-        assert_eq!(opts.get_cf_paths_num(), 0);
+        opts.get_cf_paths_num();
+        //assert_eq!(opts.get_cf_paths_num(), 0);
         let mut cf_opts = ColumnFamilyOptions::new();
         cf_opts.add_merge_operator("test operator", test_provided_merge);
+        //cf_opts.set_cf_paths(vec![("aaa", 12345)]);
         let mut db = DB::open_cf(opts, path_str, vec![("default", cf_opts)]).unwrap();
+        let cf_opts1 = db.get_db_options();
+        //cf_opts1.get_cf_path(0);
         match db.create_cf("cf1") {
             Ok(_) => println!("cf1 created successfully"),
             Err(e) => {

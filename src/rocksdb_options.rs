@@ -1228,6 +1228,22 @@ impl DBOptions {
         }
     }
 
+    pub fn get_cf_paths_num(&self) -> usize {
+        unsafe { crocksdb_ffi::crocksdb_options_get_cf_paths_num(self.inner) }
+    }
+
+    pub fn get_cf_path(&self, idx: usize) -> Option<String> {
+        unsafe {
+            let ptr = crocksdb_ffi::crocksdb_options_get_cf_path(self.inner, idx as size_t);
+            if ptr.is_null() {
+                return None;
+            }
+            let s = CStr::from_ptr(ptr).to_str().unwrap().to_owned();
+            Some(s)
+        }
+    }
+
+
     pub fn set_atomic_flush(&self, enable: bool) {
         unsafe {
             crocksdb_ffi::crocksdb_options_set_atomic_flush(self.inner, enable);
@@ -1238,9 +1254,6 @@ impl DBOptions {
         unsafe { crocksdb_ffi::crocksdb_options_get_db_paths_num(self.inner) }
     }
 
-    pub fn get_cf_paths_num(&self) -> usize {
-        unsafe { crocksdb_ffi::crocksdb_options_get_cf_paths_num(self.inner) }
-    }
 
     pub fn get_db_path(&self, idx: usize) -> Option<String> {
         unsafe {
@@ -1359,6 +1372,47 @@ impl ColumnFamilyOptions {
             filter: None,
         }
     }
+
+    /*
+    pub fn set_cf_paths<T: AsRef<Path>>(&self, val: &[(T, u64)]) {
+        let num_paths = val.len();
+        let mut cpaths = Vec::with_capacity(num_paths);
+        let mut cpath_lens = Vec::with_capacity(num_paths);
+        let mut sizes = Vec::with_capacity(num_paths);
+        for dbpath in val {
+            let dbpath_str = dbpath.0.as_ref().to_str();
+            cpaths.push(dbpath_str.unwrap().as_ptr() as _);
+            cpath_lens.push(dbpath_str.unwrap().len());
+            sizes.push(dbpath.1);
+        }
+
+        unsafe {
+            crocksdb_ffi::crocksdb_options_set_cf_paths(
+                self.inner,
+                cpaths.as_ptr(),
+                cpath_lens.as_ptr(),
+                sizes.as_ptr(),
+                num_paths as c_int,
+            );
+        }
+    }
+
+    pub fn get_cf_paths_num(&self) -> usize {
+        unsafe { crocksdb_ffi::crocksdb_options_get_cf_paths_num(self.inner) }
+    }
+
+    pub fn get_cf_path(&self, idx: usize) -> Option<String> {
+        unsafe {
+            let ptr = crocksdb_ffi::crocksdb_options_get_cf_path(self.inner, idx as size_t);
+            if ptr.is_null() {
+                return None;
+            }
+            let s = CStr::from_ptr(ptr).to_str().unwrap().to_owned();
+            Some(s)
+        }
+    }
+    */
+
 
     pub fn set_titandb_options(&mut self, opts: &TitanDBOptions) {
         unsafe {
