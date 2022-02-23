@@ -26,14 +26,23 @@ pub fn test_column_family() {
     {
         let mut opts = DBOptions::new();
         opts.create_if_missing(true);
-        opts.get_cf_paths_num();
         //assert_eq!(opts.get_cf_paths_num(), 0);
         let mut cf_opts = ColumnFamilyOptions::new();
         cf_opts.add_merge_operator("test operator", test_provided_merge);
-        //cf_opts.set_cf_paths(vec![("aaa", 12345)]);
+        //cf_opts.get_cf_path(0);
+        cf_opts.set_cf_paths(&[("aaa", 12345), ("bbb", 1024000)]);
         let mut db = DB::open_cf(opts, path_str, vec![("default", cf_opts)]).unwrap();
-        let cf_opts1 = db.get_db_options();
-        //cf_opts1.get_cf_path(0);
+        let df1 = db.cf_handle("default").unwrap();
+        assert!(db.put_cf(df1, b"k1", b"v1").is_ok());
+
+        let mut cf_opts1 = db.get_options_cf(df1);
+        assert_eq!(cf_opts1.get_cf_paths_num(), 2);
+        assert_eq!(cf_opts1.get_cf_path(0).unwrap(), "aaa");
+        assert_eq!(cf_opts1.get_cf_path(1).unwrap(), "bbb");
+        //cf_opts.get_cf_paths_num();
+        let n = cf_opts1.get_cf_paths_num();
+        println!("cf_opts1 is {:?}", n);
+
         match db.create_cf("cf1") {
             Ok(_) => println!("cf1 created successfully"),
             Err(e) => {

@@ -1228,6 +1228,7 @@ impl DBOptions {
         }
     }
 
+    /*
     pub fn get_cf_paths_num(&self) -> usize {
         unsafe { crocksdb_ffi::crocksdb_options_get_cf_paths_num(self.inner) }
     }
@@ -1242,6 +1243,7 @@ impl DBOptions {
             Some(s)
         }
     }
+    */
 
 
     pub fn set_atomic_flush(&self, enable: bool) {
@@ -1373,7 +1375,7 @@ impl ColumnFamilyOptions {
         }
     }
 
-    /*
+    
     pub fn set_cf_paths<T: AsRef<Path>>(&self, val: &[(T, u64)]) {
         let num_paths = val.len();
         let mut cpaths = Vec::with_capacity(num_paths);
@@ -1411,7 +1413,7 @@ impl ColumnFamilyOptions {
             Some(s)
         }
     }
-    */
+    
 
 
     pub fn set_titandb_options(&mut self, opts: &TitanDBOptions) {
