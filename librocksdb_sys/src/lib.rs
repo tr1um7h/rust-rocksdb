@@ -907,6 +907,15 @@ extern "C" {
         target_size: *const u64,
         num_paths: c_int,
     );
+    pub fn crocksdb_options_set_cf_paths(
+        options: *mut Options,
+        db_paths: *const *const c_char,
+        path_lens: *const usize,
+        target_size: *const u64,
+        num_paths: c_int,
+    );
+    pub fn crocksdb_options_get_cf_paths_num(options: *mut Options) -> usize;
+    pub fn crocksdb_options_get_cf_path(options: *mut Options, idx: size_t) -> *const c_char;
     pub fn crocksdb_options_get_db_paths_num(options: *mut Options) -> usize;
     pub fn crocksdb_options_get_db_path(options: *mut Options, idx: size_t) -> *const c_char;
     pub fn crocksdb_options_get_path_target_size(options: *mut Options, idx: size_t) -> u64;
@@ -2858,6 +2867,8 @@ mod test {
             let mut err = ptr::null_mut();
             let db = crocksdb_open(opts, cpath_ptr, &mut err);
             assert!(err.is_null(), error_message(err));
+            let mut db_opts = crocksdb_get_db_options(db);
+            crocksdb_options_get_cf_paths_num(db_opts);
 
             let env_opt = crocksdb_envoptions_create();
             let io_options = crocksdb_options_create();

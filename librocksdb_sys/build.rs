@@ -51,6 +51,7 @@ fn config_binding_path() {
             file_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap())
                 .join("bindings")
                 .join(format!("{}-bindings.rs", target));
+            bindgen_rocksdb(&file_path);
             if env::var("UPDATE_BIND")
                 .map(|s| s.as_str() == "1")
                 .unwrap_or(false)

@@ -2786,6 +2786,18 @@ void crocksdb_options_set_use_fsync(crocksdb_options_t* opt, int use_fsync) {
   opt->rep.use_fsync = use_fsync;
 }
 
+void crocksdb_options_set_cf_paths(crocksdb_options_t* opt,
+                                   const char* const* dbpath_list,
+                                   const size_t* path_lens,
+                                   const uint64_t* target_size, int num_paths) {
+  std::vector<DbPath> db_paths;
+  for (int i = 0; i < num_paths; ++i) {
+    db_paths.emplace_back(
+        DbPath(std::string(dbpath_list[i], path_lens[i]), target_size[i]));
+  }
+  opt->rep.cf_paths = db_paths;
+}
+
 void crocksdb_options_set_db_paths(crocksdb_options_t* opt,
                                    const char* const* dbpath_list,
                                    const size_t* path_lens,
@@ -2802,9 +2814,18 @@ size_t crocksdb_options_get_db_paths_num(crocksdb_options_t* opt) {
   return opt->rep.db_paths.size();
 }
 
+size_t crocksdb_options_get_cf_paths_num(crocksdb_options_t* opt) {
+  return opt->rep.cf_paths.size();
+}
+
 const char* crocksdb_options_get_db_path(crocksdb_options_t* opt,
                                          size_t index) {
   return opt->rep.db_paths[index].path.data();
+}
+
+const char* crocksdb_options_get_cf_path(crocksdb_options_t* opt,
+                                         size_t index) {
+  return opt->rep.cf_paths[index].path.data();
 }
 
 uint64_t crocksdb_options_get_path_target_size(crocksdb_options_t* opt,
